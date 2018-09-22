@@ -36,7 +36,7 @@ class ModelParameter {
       return false
     }
 
-    console.log('update', nextState)
+    // console.log('update', nextState)
 
     this.beginTs = now
     this.beginState = this.targetState

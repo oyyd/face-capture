@@ -1,3 +1,4 @@
+const cv = require('opencv4nodejs')
 const path = require('path')
 const express = require('express')
 
@@ -14,9 +15,14 @@ class ModelParameterServer {
     })
   }
 
-  updateCamImg(camImg) {
-    this.camImg = camImg
-    this.io.emit('cam_img', camImg)
+  updateCamImg(info) {
+    const { points, mat } = info
+    // console.log('points, mat', points, mat)
+    const img = cv.imencode('.jpg', mat).toString('base64')
+    this.io.emit('cam_img', {
+      points,
+      img,
+    })
   }
 
   emitParams(params) {

@@ -5,7 +5,7 @@ module.exports = {
   // TODO:
   // mode: 'production',
   mode: 'development',
-  entry: path.resolve(__dirname, './src/index.js'),
+  entry: path.resolve(__dirname, './src/browser.js'),
   output: {
     path: path.resolve(__dirname, './dist'),
   },

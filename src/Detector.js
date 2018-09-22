@@ -1,14 +1,16 @@
+const Event = require('events')
 const cv = require('opencv4nodejs')
 const fr = require('face-recognition').withCv(cv)
 const { getImageNormal } = require('./resolve_landmarks')
+const { IMG_SIZE } = require('./common/constants')
 
 // eslint-disable-next-line
 const getDistence = (p1, p2) => Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2))
-const MIN_CONFIDENCE = 0.7
-const RESIZE = 250
+const MIN_CONFIDENCE = 1
 
-class Detector {
+class Detector extends Event {
   constructor() {
+    super()
     this.isProcessing = false
     this.detector = fr.AsyncFaceDetector()
     this.predictor = fr.FaceLandmark68Predictor()
@@ -41,7 +43,8 @@ class Detector {
 
     const modRect = faceRects[0]
 
-    if (modRect.confidence < MIN_CONFIDENCE) {
+
+    if (modRect.confidence > MIN_CONFIDENCE) {
       return null
     }
 
@@ -49,10 +52,10 @@ class Detector {
   }
 
   async getLandmarks(mat) {
-    const date = Date.now()
+    // const date = Date.now()
 
     // These operations are fast.
-    const resizedMat = mat.resize(RESIZE, RESIZE)
+    const resizedMat = mat.resize(IMG_SIZE, IMG_SIZE)
     const cvImage = fr.CvImage(resizedMat)
     const rbgImg = fr.cvImageToImageRGB(cvImage)
 
@@ -63,11 +66,20 @@ class Detector {
       return null
     }
 
+    console.log('rect', rect)
+
     // console.log('rect', rect)
     const shape = await this.predictor.predictAsync(rbgImg, rect)
 
+    const points = shape.getParts()
+
+    this.emit('update_landmarks', {
+      points,
+      mat: resizedMat,
+    })
+
     // console.log('elapsed p2: ', Date.now() - date)
-    return shape.getParts()
+    return points
   }
 
   async getImageNormal(points) {

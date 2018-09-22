@@ -12,14 +12,22 @@ if (module === require.main) {
   })
 
   const model = new ModelParameter()
-  const v = new VideoReceiver((frame) => {
-    // const camImg = cv.imencode('.jpg', frame).toString('base64')
-    // model.updateImage(frame).then((success) => {
-    //   if (success) {
-    //     // console.log(success)
-    //   }
-    // })
+
+  model.detector.on('update_landmarks', (marks) => {
+    server.updateCamImg(marks)
   })
+
+  const v = new VideoReceiver((frame) => {
+    // const camImg = cv.imencode('.jpg', frame.resize(250, 250)).toString('base64')
+    // server.updateCamImg(camImg)
+
+    model.updateImage(frame).then((success) => {
+      if (success) {
+        // console.log(success)
+      }
+    })
+  })
+
   v.start()
 
   setInterval(() => {

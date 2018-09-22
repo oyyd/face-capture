@@ -3,8 +3,7 @@
 const cv = require('opencv4nodejs')
 const assert = require('assert')
 
-const VIDEO_STREAM_INTERVAL = 100
-const RESIZE = 250
+const VIDEO_STREAM_INTERVAL = 50
 
 class VideoReceiver {
   constructor(onFrame) {
@@ -45,6 +44,7 @@ module.exports = {
 }
 
 if (module === require.main) {
+  const RESIZE = 250
   const fr = require('face-recognition').withCv(cv)
   const { ModelParameter } = require('./ModelParameter')
 
