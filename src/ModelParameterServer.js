@@ -25,6 +25,10 @@ class ModelParameterServer {
     })
   }
 
+  emitNormals(normals) {
+    this.io.emit('update_normals', normals)
+  }
+
   emitParams(params) {
     this.io.emit('param', params)
   }

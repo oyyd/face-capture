@@ -52,12 +52,12 @@ class Detector extends Event {
   }
 
   async getLandmarks(mat) {
-    // const date = Date.now()
-
     // These operations are fast.
     const resizedMat = mat.resize(IMG_SIZE, IMG_SIZE)
     const cvImage = fr.CvImage(resizedMat)
     const rbgImg = fr.cvImageToImageRGB(cvImage)
+
+    let date = Date.now()
 
     const rect = await this.dlibDetct(rbgImg)
     // const rect = await this.haarDetect(mat)
@@ -66,10 +66,14 @@ class Detector extends Event {
       return null
     }
 
-    console.log('rect', rect)
+    console.log('detect', Date.now() - date)
+
+    // console.log('rect', rect)
 
     // console.log('rect', rect)
     const shape = await this.predictor.predictAsync(rbgImg, rect)
+
+    console.log('shape', Date.now() - date)
 
     const points = shape.getParts()
 
@@ -129,11 +133,15 @@ class Detector extends Event {
 
       this.isProcessing = false
 
-      return Object.assign({
+      const normals = Object.assign({
         mouseSize,
         leftEyeSize,
         rightEyeSize,
       }, imageNormal)
+
+      this.emit('update_normals', normals)
+
+      return normals
     } catch (e) {
       console.log(e)
       throw e

@@ -139,10 +139,11 @@ Simple.draw = function(gl) {
   var t = UtSystem.getUserTimeMSec() * 0.001 * 2 * Math.PI
   var cycle = 3.0
 
-  if (window.normal) {
-    live2DModel.setParamFloat('PARAM_ANGLE_X', window.normal.yaw)
-    live2DModel.setParamFloat('PARAM_ANGLE_Y', window.normal.pitch)
-    live2DModel.setParamFloat('PARAM_ANGLE_Z', window.normal.roll)
+  if (window.params) {
+    const normals = window.params.getFrameParams()
+    live2DModel.setParamFloat('PARAM_ANGLE_X', normals.yaw)
+    live2DModel.setParamFloat('PARAM_ANGLE_Y', normals.pitch)
+    live2DModel.setParamFloat('PARAM_ANGLE_Z', normals.roll)
   }
   // live2DModel.setParamFloat('PARAM_EYE_R_OPEN', 1 * Math.sin(t / cycle))
   // live2DModel.setParamFloat('PARAM_EYE_L_OPEN', 1 * Math.sin(t / cycle))
